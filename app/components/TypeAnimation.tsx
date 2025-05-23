@@ -87,20 +87,21 @@ export default function TypeAnimation() {
   }
 
   return (
-    <div className="w-full flex items-center gap-4">
-      <div className="flex-1 bg-[#0d1620] rounded-lg p-4 pb-12 min-h-[100px] flex items-center relative">
+    <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+      <div className="flex-1 bg-[#0d1620] rounded-lg p-4 pb-12 min-h-[120px] sm:min-h-[100px] flex items-start sm:items-center relative">
         {isTyping ? (
-          <div className="flex-1 cursor-text" onClick={handleTextClick}>
-            <span className="text-gray-300">{text}</span>
-            <span className="w-[2px] h-5 bg-brand-blue ml-1 animate-pulse inline-block align-middle"></span>
+          <div className="flex-1 cursor-text w-full" onClick={handleTextClick}>
+            <div className="text-gray-300 leading-relaxed break-words">
+              <span>{text}</span>
+              <span className="w-[2px] h-5 bg-brand-blue ml-1 animate-pulse inline-block align-middle"></span>
+            </div>
           </div>
         ) : (
-          <input
-            ref={inputRef}
-            type="text"
-            className="w-full bg-transparent text-gray-300 outline-none"
+          <textarea
+            ref={inputRef as any}
+            className="w-full bg-transparent text-gray-300 outline-none resize-none leading-relaxed min-h-[60px] sm:min-h-[40px]"
             value={text}
-            onChange={handleTextChange}
+            onChange={(e) => handleTextChange(e as any)}
             onBlur={() => {
               if (!text) {
                 setIsTyping(true)
@@ -108,6 +109,7 @@ export default function TypeAnimation() {
               }
             }}
             placeholder="Type your message..."
+            rows={3}
           />
         )}
         
@@ -130,7 +132,7 @@ export default function TypeAnimation() {
       </div>
       <button 
         onClick={handleGenerate}
-        className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+        className={`px-6 py-3 rounded-full font-medium transition-all duration-200 w-full sm:w-auto ${
           userHasTyped 
             ? 'bg-brand-blue text-white hover:bg-opacity-90' 
             : 'bg-brand-blue bg-opacity-40 text-white'

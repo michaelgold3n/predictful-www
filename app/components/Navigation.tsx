@@ -31,23 +31,23 @@ export default function Navigation() {
         <div className="md:hidden">
           {/* Mobile Header */}
           <div className="flex items-center justify-between">
-            {/* Hamburger Menu Button */}
+            {/* Hamburger Menu Button - Made Bigger */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md hover:bg-white/10 transition-colors"
+              className="p-3 rounded-md hover:bg-white/10 transition-colors"
               aria-label="Toggle menu"
             >
-              <div className="w-6 h-6 flex flex-col justify-center items-center">
-                <span className={`block w-5 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+              <div className="w-8 h-8 flex flex-col justify-center items-center">
+                <span className={`block w-6 h-0.5 bg-white mb-1.5 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                <span className={`block w-6 h-0.5 bg-white mb-1.5 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+                <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
               </div>
             </button>
 
-            {/* Centered Logo */}
+            {/* Centered Logo - Made Bigger */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
               <Link href="/" className="transform transition-transform hover:scale-110">
-                <Image src="/logo.png" alt="Predictful" height={36} width={135} className="object-contain" />
+                <Image src="/logo.png" alt="Predictful" height={48} width={180} className="object-contain" />
               </Link>
             </div>
 

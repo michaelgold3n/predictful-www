@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 
 const phrases = [
   "Draft a post about your latest product launch",
-  "Write about your company's new AI feature",
-  "Share an update about your recent milestone",
+  "Write a tweet about your new AI feature",
+  "Tweet an update about your recent milestone",
   "Create a thread about your startup journey"
 ]
 

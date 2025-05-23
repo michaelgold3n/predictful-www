@@ -33,7 +33,7 @@ export default function Home() {
             <button className="bg-brand-blue text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-opacity-90 transition-colors inline-flex items-center justify-center gap-2 w-full sm:w-auto">
               Sign in with <Image src="/X_logo_2023_(white).png" alt="X Logo" width={20} height={20} className="inline" />
             </button>
-            <button className="border border-white text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors w-full sm:w-auto">
+            <button className="hidden sm:block border border-white text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors w-full sm:w-auto">
               Watch Demo
             </button>
           </div>

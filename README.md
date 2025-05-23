@@ -1,44 +1,50 @@
-# Predictful
+# Predictful Landing Page
 
-A standalone React demo that animates a cumulative engagement graph and statistical confidence numbers when the **Predict** button is pressed. Inspired by A/B testing analytics dashboards.
+A modern landing page for Predictful - an AI-powered A/B testing tool for X (formerly Twitter) posts.
 
 ## Features
-- Compare two versions (A & B) of text/content
-- Animated cumulative engagement line graph
-- Animated statistical confidence numbers
-- Dark mode UI
+
+- Modern, responsive design
+- Built with Next.js 14 and TypeScript
+- Styled with Tailwind CSS
+- Interactive demo section
+- Optimized for performance
 
 ## Getting Started
 
-### Prerequisites
-- Node.js (v16 or higher recommended)
-- npm or yarn
+First, install the dependencies:
 
-### Setup
 ```bash
 npm install
 # or
 yarn install
+# or
+pnpm install
 ```
 
-### Run the App
+Then, run the development server:
+
 ```bash
 npm run dev
 # or
 yarn dev
+# or
+pnpm dev
 ```
 
-The app will be available at [http://localhost:5173](http://localhost:5173) (or the port Vite specifies).
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
----
+## Project Structure
 
-## Tech Stack
-- [React](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [Recharts](https://recharts.org/) (for animated graphs)
-- [styled-components](https://styled-components.com/) (for styling)
+- `app/` - Next.js app directory containing pages and layouts
+- `public/` - Static assets like images and SVGs
+- `components/` - Reusable React components
+- `styles/` - Global styles and Tailwind configuration
 
----
+## Technologies Used
 
-## License
-MIT 
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- CSS Modules 

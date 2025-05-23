@@ -1,363 +1,219 @@
-import React, { useState, useRef } from 'react';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
-import AnimatedGraph from './AnimatedGraph';
-import { versionA, versionB } from './graphData';
-import { BsImage, BsCollection, BsVolumeUp, BsListUl, BsEmojiSmile, BsCamera, BsGeoAlt, BsTypeItalic } from 'react-icons/bs';
+import React, { useState } from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
+import { BsImage } from 'react-icons/bs';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
   body {
-    background: #181a20;
+    background: #000;
     color: #fff;
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
   }
 `;
 
+const Container = styled.div`
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+`;
+
 const Header = styled.header`
-  width: 100%;
-  padding: 20px 0;
-  background: #23262f;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+  }
+`;
+
+const SubscribeButton = styled.button`
+  background: #1DA1F2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #1991db;
+  }
 `;
 
 const Logo = styled.h1`
   margin: 0;
-  text-align: center;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  color: #2e90fa;
-`;
-
-const Container = styled.div`
-  max-width: 700px;
-  margin: 100px auto 40px auto;
-  background: #23262f;
-  border-radius: 16px;
-  box-shadow: 0 4px 32px #000a;
-  padding: 24px 20px 20px 20px;
+  color: white;
   
-  @media (max-width: 768px) {
-    margin: 80px 16px 24px 16px;
-    padding: 16px;
+  span {
+    color: #1DA1F2;
   }
 `;
 
-const Versions = styled.div`
+const ProfilePicture = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #1DA1F2, #14171A);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+`;
+
+const MainHeading = styled.h2`
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 60px 0;
+  line-height: 1.2;
+  max-width: 600px;
+  
+  @media (max-width: 768px) {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+  
+  span {
+    color: #1DA1F2;
+  }
+`;
+
+const InputContainer = styled.div`
+  width: 100%;
+  max-width: 500px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #333;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  resize: none;
+  outline: none;
+  min-height: 80px;
+  
+  &::placeholder {
+    color: #666;
+  }
+`;
+
+const InputFooter = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
-  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #333;
+`;
+
+const ImageIcon = styled.div`
+  color: #1DA1F2;
+  cursor: pointer;
+  font-size: 18px;
   
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 24px;
+  &:hover {
+    color: #1991db;
   }
 `;
 
-const VersionBox = styled.div`
-  flex: 1;
-  background: #181a20;
-  border-radius: 8px;
-  padding: 12px;
-  min-height: 60px;
-  cursor: default;
-  position: relative;
-  
-  @media (max-width: 768px) {
-    min-height: 80px;
-  }
-`;
-
-const VersionTitle = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-  color: ${props => props.color};
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #333;
-`;
-
-const TextCursor = styled.div`
-  width: 2px;
-  height: 20px;
-  background: #fff;
-  position: absolute;
-  left: 12px;
-  top: 45px;
-  animation: blink 1s step-end infinite;
-
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-`;
-
-const PlaceholderText = styled.div`
-  color: #666;
-  font-size: 14px;
-  margin-top: 4px;
-  opacity: ${props => props.isVisible ? 0 : 1};
-`;
-
-const typewriter = keyframes`
-  from {
-    width: 0;
-    border-right: 2px solid #fff;
-  }
-  to {
-    width: 100%;
-    border-right: 2px solid #fff;
-  }
-`;
-
-const AnimatedText = styled.div`
-  overflow: hidden;
-  line-height: 1.4;
-  font-size: 14px;
-  position: absolute;
-  top: 45px;
-  left: 12px;
-  right: 12px;
-  opacity: ${props => props.isVisible ? 1 : 0};
-  white-space: pre-wrap;
-  word-break: break-word;
-
-  &::after {
-    content: '';
-    position: absolute;
-    right: -2px;
-    top: 0;
-    height: 18px;
-    width: 2px;
-    background: #fff;
-    animation: ${props => props.isVisible ? 'blink 1s step-end infinite' : 'none'};
-  }
-
-  & > span {
-    visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
-    animation: ${props => props.isVisible ? 'type 0.05s steps(1)' : 'none'};
-    animation-fill-mode: backwards;
-  }
-
-  @keyframes type {
-    from { visibility: hidden; }
-    to { visibility: visible; }
-  }
-
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-`;
-
-const PredictButton = styled.button`
-  background: #2e90fa;
-  color: #fff;
+const GenerateButton = styled.button`
+  background: #1DA1F2;
+  color: white;
   border: none;
   border-radius: 20px;
-  padding: 7px 22px;
-  font-size: 1rem;
+  padding: 8px 20px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  margin: 18px 18px 24px 0;
-  float: right;
   transition: background 0.2s;
+  
   &:hover {
-    background: #1570ef;
+    background: #1991db;
   }
-`;
-
-const GraphSection = styled.div`
-  background: #181a20;
-  border-radius: 12px;
-  padding: 24px 16px 16px 16px;
-  margin-bottom: 24px;
-`;
-
-const StatsSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background: #181a20;
-  border-radius: 12px;
-  padding: 16px;
-`;
-
-const StatBox = styled.div`
-  flex: 1;
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fff;
-`;
-
-const IconContainer = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-top: 40px;
-  color: #2e90fa;
-  font-size: 1rem;
-
-  svg {
-    cursor: pointer;
-    transition: color 0.2s;
-    &:hover {
-      color: #1570ef;
-    }
+  
+  &:disabled {
+    background: #333;
+    cursor: not-allowed;
   }
 `;
 
 export default function App() {
-  const [animating, setAnimating] = useState(false);
-  const [progress, setProgress] = useState(-0.1);
-  const [textAVisible, setTextAVisible] = useState(false);
-  const [textBVisible, setTextBVisible] = useState(false);
-  const [stats, setStats] = useState({
-    likes: 100.0,
-    comments: 100.0,
-    retweets: 100.0,
-    quotes: 100.0,
-    likesLabel: 'Vers. A',
-    commentsLabel: 'Vers. A',
-    retweetsLabel: 'Vers. A',
-    quotesLabel: 'Vers. A',
-  });
-  const intervalRef = useRef();
+  const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const statsStart = {
-    likes: 100.0,
-    comments: 100.0,
-    retweets: 100.0,
-    quotes: 98.7,
-    likesLabel: 'Vers. A',
-    commentsLabel: 'Vers. A',
-    retweetsLabel: 'Vers. A',
-    quotesLabel: 'Vers. B',
-  };
-  const statsEnd = {
-    likes: 100.0,
-    comments: 100.0,
-    retweets: 100.0,
-    quotes: 100.0,
-    likesLabel: 'Vers. A',
-    commentsLabel: 'Vers. A',
-    retweetsLabel: 'Vers. A',
-    quotesLabel: 'Vers. A',
-  };
-
-  const textA = "built an algorithm that analyzes your digital footprint to create content that triggers you to react. at scale";
-  const textB = "we've been quietly tracking everything that triggers reactions from you. this tweet was engineered using that data";
-
-  const renderAnimatedText = (text, isVisible) => {
-    return text.split('').map((char, index) => (
-      <span key={index} style={{ animationDelay: `${index * 20}ms` }}>
-        {char}
-      </span>
-    ));
-  };
-
-  function handlePredict() {
-    if (animating) return;
-    setAnimating(true);
-    setProgress(-0.1);
-    setStats(statsStart);
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
     
-    let start;
-    function animate(ts) {
-      if (!start) start = ts;
-      const elapsed = ts - start;
-      const duration = 8000;
-      
-      const p = Math.min(elapsed / duration, 1);
-      
-      setProgress(p - 0.1);
-      
-      setStats({
-        likes: statsStart.likes + (statsEnd.likes - statsStart.likes) * p,
-        comments: statsStart.comments + (statsEnd.comments - statsStart.comments) * Math.max(0, p - 0.1),
-        retweets: statsStart.retweets + (statsEnd.retweets - statsStart.retweets) * Math.max(0, p - 0.2),
-        quotes: statsStart.quotes + (statsEnd.quotes - statsStart.quotes) * Math.max(0, p - 0.3),
-        likesLabel: statsEnd.likesLabel,
-        commentsLabel: statsEnd.commentsLabel,
-        retweetsLabel: statsEnd.retweetsLabel,
-        quotesLabel: p < 0.8 ? statsStart.quotesLabel : statsEnd.quotesLabel,
-      });
-
-      if (p < 1) {
-        intervalRef.current = requestAnimationFrame(animate);
-      } else {
-        setAnimating(false);
-      }
-    }
-    intervalRef.current = requestAnimationFrame(animate);
-  }
-
-  React.useEffect(() => {
-    return () => intervalRef.current && cancelAnimationFrame(intervalRef.current);
-  }, []);
+    setIsGenerating(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsGenerating(false);
+      alert('Post optimization complete!');
+    }, 2000);
+  };
 
   return (
     <>
       <GlobalStyle />
-      <Header>
-        <Logo>Predictful</Logo>
-      </Header>
       <Container>
-        <Versions>
-          <VersionBox onClick={() => !textAVisible && setTextAVisible(true)}>
-            <VersionTitle color="#2e90fa">Version A</VersionTitle>
-            <PlaceholderText isVisible={textAVisible}>Enter version A tweet...</PlaceholderText>
-            {!textAVisible && <TextCursor />}
-            <AnimatedText isVisible={textAVisible}>
-              {renderAnimatedText(textA, textAVisible)}
-            </AnimatedText>
-            <IconContainer>
-              <BsImage />
-              <BsCollection />
-              <BsVolumeUp />
-              <BsListUl />
-              <BsEmojiSmile />
-              <BsCamera />
-              <BsGeoAlt />
-              <BsTypeItalic />
-            </IconContainer>
-          </VersionBox>
-          <VersionBox onClick={() => !textBVisible && setTextBVisible(true)}>
-            <VersionTitle color="#ff9800">Version B</VersionTitle>
-            <PlaceholderText isVisible={textBVisible}>Enter version B tweet...</PlaceholderText>
-            {!textBVisible && <TextCursor />}
-            <AnimatedText isVisible={textBVisible}>
-              {renderAnimatedText(textB, textBVisible)}
-            </AnimatedText>
-            <IconContainer>
-              <BsImage />
-              <BsCollection />
-              <BsVolumeUp />
-              <BsListUl />
-              <BsEmojiSmile />
-              <BsCamera />
-              <BsGeoAlt />
-              <BsTypeItalic />
-            </IconContainer>
-          </VersionBox>
-        </Versions>
-        <PredictButton onClick={handlePredict} disabled={animating} style={{ opacity: animating ? 0.7 : 1 }}>
-          Predict
-        </PredictButton>
-        <GraphSection>
-          <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8 }}>Cumulative Engagement</div>
-          <AnimatedGraph dataA={versionA} dataB={versionB} animationProgress={progress} />
-        </GraphSection>
-        <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8 }}>Statistical Confidence</div>
-        <StatsSection>
-          <StatBox>Likes<br /><span style={{ fontSize: '1.5rem', color: '#2e90fa' }}>{stats.likes.toFixed(1)}%</span><br /><span style={{ fontSize: '0.9rem', color: '#888' }}>{stats.likesLabel}</span></StatBox>
-          <StatBox>Comments<br /><span style={{ fontSize: '1.5rem', color: '#2e90fa' }}>{stats.comments.toFixed(1)}%</span><br /><span style={{ fontSize: '0.9rem', color: '#888' }}>{stats.commentsLabel}</span></StatBox>
-          <StatBox>Retweets<br /><span style={{ fontSize: '1.5rem', color: '#2e90fa' }}>{stats.retweets.toFixed(1)}%</span><br /><span style={{ fontSize: '0.9rem', color: '#888' }}>{stats.retweetsLabel}</span></StatBox>
-          <StatBox>Quotes<br /><span style={{ fontSize: '1.5rem', color: '#ff9800' }}>{stats.quotes.toFixed(1)}%</span><br /><span style={{ fontSize: '0.9rem', color: '#888' }}>{stats.quotesLabel}</span></StatBox>
-        </StatsSection>
+        <Header>
+          <SubscribeButton>Subscribe</SubscribeButton>
+          <Logo>Crowd<span>Test</span></Logo>
+          <ProfilePicture>MG</ProfilePicture>
+        </Header>
+        
+        <MainContent>
+          <MainHeading>
+            Optimize your <span>X</span><br />
+            posts with just a prompt
+          </MainHeading>
+          
+          <InputContainer>
+            <TextArea
+              placeholder="Draft"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+            <InputFooter>
+              <ImageIcon>
+                <BsImage />
+              </ImageIcon>
+              <GenerateButton 
+                onClick={handleGenerate}
+                disabled={!prompt.trim() || isGenerating}
+              >
+                {isGenerating ? 'Generating...' : 'Generate'}
+              </GenerateButton>
+            </InputFooter>
+          </InputContainer>
+        </MainContent>
       </Container>
     </>
   );
